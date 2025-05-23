@@ -1,0 +1,104 @@
+<div
+  class="container-sm mt-4 p-3 border rounded shadow"
+  style="margin-left: 260px; max-width: calc(100% - 260px)"
+>
+  <form [formGroup]="formBuscar">
+    <div class="row">
+      <div class="col text-center">
+        <p class="h4 fw-bold">Lista de Provincias</p>
+      </div>
+    </div>
+    <div class="row align-items-center">
+      <div class="col-2">
+        <label for="departamento" class="fw-bold">Departamento:</label>
+      </div>
+      <div class="col">
+        <select
+          class="form-select form-select-sm"
+          aria-label="Default select example"
+          formControlName="departamento"
+        >
+          <option value="0" selected>--- TODOS ---</option>
+          @for (departamento of departamentos; track departamento.id) {
+          <option value="{{ departamento.id }}">
+            {{ departamento.nombre | uppercase }}
+          </option>
+          }
+        </select>
+      </div>
+    </div>
+    <div class="d-flex justify-content-between mt-3">
+      <div>
+        <button
+          type="button"
+          class="btn btn-primary btn-sm me-2"
+          (click)="buscar()"
+        >
+          Buscar
+        </button>
+        <button
+          type="button"
+          class="btn btn-secondary btn-sm"
+          (click)="limpiar()"
+        >
+          Limpiar
+        </button>
+      </div>
+    </div>
+  </form>
+</div>
+<div
+  class="container-sm mt-4 p-3 border rounded shadow"
+  style="margin-left: 260px; max-width: calc(100% - 260px)"
+>
+  <div class="table-responsive">
+    <table
+      class="table table-sm table-striped table-bordered text-center small"
+    >
+      <thead class="table-light">
+        <tr>
+          <th>ITEM</th>
+          <th>PROVINCIA</th>
+          <th>DEPARTAMENTO</th>
+          <th scope="col" colspan="2" style="width: 60px; text-align: center">
+            OPCIONES
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (provincia of pagedItems; track provincia.id) {
+        <tr>
+          <td>{{ provincias.indexOf(provincia) + 1 }}</td>
+          <td>{{ provincia.nombre | uppercase }}</td>
+          <td>{{ provincia.departamento_nombre | uppercase }}</td>
+          <td>
+            <button type="button" hidden="true" class="btn btn-secondary">
+              <i class="bi bi-pencil"></i>
+            </button>
+          </td>
+          <td>
+            <button type="button" hidden="true" class="btn btn-danger">
+              <i class="bi bi-trash"></i>
+            </button>
+          </td>
+        </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+  <div class="row">
+    <div class="col-12 d-flex justify-content-end">
+      <pagination
+        [totalItems]="provincias.length"
+        [(ngModel)]="currentPage"
+        (pageChanged)="pageChanged($event)"
+        [itemsPerPage]="10"
+        previousText="&lsaquo;"
+        nextText="&rsaquo;"
+        firstText="&laquo;"
+        lastText="&raquo;"
+      >
+      </pagination>
+    </div>
+  </div>
+</div>

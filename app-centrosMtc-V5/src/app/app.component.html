@@ -1,0 +1,38 @@
+@if (accesoConcedido()) {
+<div
+  class="container-sm mt-1 p-1"
+   style="margin-left: 260px; max-width: calc(98% - 260px)"
+>
+  <div class="row">
+    <div class="col-12 text-end">
+      <button class="btn btn-danger btn-sm" (click)="logout()">
+        <i class="bi bi-box-arrow-right"></i> Cerrar sesión
+      </button>
+    </div>
+  </div>
+</div>
+<div class="container-fluid d-flex">
+  <nav
+    class="sidebar vh-100 shadow border rounded p-3"
+    style="width: 250px; position: fixed; left: 0; top: 0; bottom: 0"
+  >
+    <ul class="nav flex-column flex-grow-1">
+      <li class="nav-item">
+        <a class="nav-link active" routerLink="centromedico/list-admin"
+          >Centros Médicos</a
+        >
+        <a class="nav-link" routerLink="departamentos/list">Departamentos</a>
+        <a class="nav-link" routerLink="provincias/list">Provincias</a>
+        <a class="nav-link" routerLink="distritos/list">Distritos</a>
+      </li>
+    </ul>
+  </nav>
+  <main class="content flex-grow-1 p-3 overflow-hidden">
+    <router-outlet></router-outlet>
+  </main>
+</div>
+}@else {
+<main>
+  <router-outlet></router-outlet>
+</main>
+}

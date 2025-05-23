@@ -1,0 +1,177 @@
+import { Component, inject } from '@angular/core';
+import { Departamento } from '../../../interface/departamento/departamento';
+import { Provincia } from '../../../interface/provincia/provincia';
+import { Distrito } from '../../../interface/distrito/distrito';
+import { CentroMedico } from '../../../interface/centros/centromedico';
+import { DepartamentoService } from '../../../services/departamento.service';
+import { ProvinciaService } from '../../../services/provincia.service';
+import { DistritoService } from '../../../services/distrito.service';
+import { CentromedicoService } from '../../../services/centromedico.service';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { ToastrService } from 'ngx-toastr';
+import { CommonModule } from '@angular/common';
+import { PageChangedEvent, PaginationModule } from 'ngx-bootstrap/pagination';
+import { Router } from '@angular/router';
+import { PipeAutorizacionPipe } from '../../../pipes/pipe-autorizacion.pipe';
+
+@Component({
+  selector: 'app-centrosmedicos-list-public',
+  imports: [
+    CommonModule, 
+    ReactiveFormsModule,
+    PaginationModule,
+    FormsModule,
+    PipeAutorizacionPipe
+  ],
+  templateUrl: './centrosmedicos-list-public.component.html',
+  styleUrl: './centrosmedicos-list-public.component.css'
+})
+export class CentrosmedicosListPublicComponent {
+  departamentos: Departamento[] = [];
+  provincias: Provincia[] = [];
+  distritos: Distrito[] = [];
+  centrosMedicos: CentroMedico[] = [];
+
+  pagedItems:CentroMedico[]=[];
+  itemsPerPage:number=8;
+  currentPage:number=1;
+
+  departamentoService = inject(DepartamentoService);
+  provinciaService = inject(ProvinciaService);
+  distritoService = inject(DistritoService);
+  centromedicoService = inject(CentromedicoService);
+  formBuilder = inject(FormBuilder);
+  router=inject(Router);
+  
+  toastr = inject(ToastrService);
+  formBuscar! : FormGroup;
+
+  ngOnInit(): void {
+    this.createFormBuscar();
+    this.getAllDepartamento();
+  }
+
+  createFormBuscar(){
+    this.formBuscar = this.formBuilder.group(
+      {
+        departamento:['0'],
+        provincia: ['0'],
+        distrito: ['0']
+      }
+    )
+  }
+
+  getAllDepartamento() {
+    this.departamentoService.getAll().subscribe({
+      next: (response) => {
+        this.departamentos = response;
+      },
+      error: (error) => {
+        this.toastr.error("Error al cargar departamentos");
+      },
+    });
+  }
+
+  getProvinciaByDepartamento(departamentoId: string) {
+    this.provinciaService.getByDepartamento(departamentoId).subscribe({
+      next: (response) => {
+        this.provincias = response;
+      },
+      error: (error) => {
+        this.toastr.error("Error al cargar provincias por departamento");
+      },
+    });
+  }
+
+  getDistritoByProvincia(provinciaId: string) {
+    this.distritoService.getByProvincia(provinciaId).subscribe({
+      next: (response) => {
+        this.distritos = response;
+      },
+      error: (error) => {
+        this.toastr.error("Error al cargar distritos por provincia");
+      },
+    });
+  }
+
+  getAll() {
+    this.centromedicoService.getAll().subscribe({
+      next: (response) => {
+        this.centrosMedicos = response;
+        this.pagedItems = this.centrosMedicos.slice(0, this.itemsPerPage);
+      },
+      error: (error) => {
+        this.toastr.error("Error al cargar los centros médicos");
+      },
+    });
+  }
+
+  getCentroMedicosByUbigeo(
+    departamentoId: string,
+    provinciaId: string,
+    distritoId: string
+  ) {
+    this.centromedicoService
+      .getByUbigeo(departamentoId, provinciaId, distritoId)
+      .subscribe({
+        next: (response) => {
+          this.centrosMedicos = response;
+          this.pagedItems = this.centrosMedicos.slice(0, this.itemsPerPage);
+        },
+        error: (error) => {
+          this.toastr.error("Error al cargar centros médicos");
+        },
+      });
+  }
+
+  onDepartamentoChange($event: any) {
+    const departamentoId = $event.target.value;
+    this.provincias = [];
+    if (departamentoId == '0') {
+      this.provincias = [];
+      this.distritos = [];
+    }
+    this.formBuscar.controls['provincia'].setValue('0');
+    this.getProvinciaByDepartamento(departamentoId);
+  }
+
+  onProvinciaChange($event: any) {
+    const provinciaId = $event.target.value;
+    this.distritos = [];
+    if (provinciaId == '0') {
+      this.distritos = [];
+    }
+    this.formBuscar.controls['distrito'].setValue('0');
+    this.getDistritoByProvincia(provinciaId);
+  }
+
+  buscar() {
+    let departamentoId = this.formBuscar.value.departamento ?? '0';
+    let provinciaId = this.formBuscar.value.provincia ?? '0';
+    let distritoId = this.formBuscar.value.distrito ?? '0';
+    if (departamentoId != '0')
+      this.getCentroMedicosByUbigeo(departamentoId, provinciaId, distritoId);
+    else this.getAll();
+  }
+
+  pageChanged(event: PageChangedEvent): void {
+    const startItem = (event.page - 1) * this.itemsPerPage; //0
+    const endItem = event.page * this.itemsPerPage; //10
+    this.pagedItems = this.centrosMedicos.slice(startItem, endItem);
+  }
+
+  limpiar() {
+    this.provincias = [];
+    this.distritos = [];
+    this.formBuscar.controls['departamento'].setValue('0');
+    this.formBuscar.controls['provincia'].setValue('0');
+    this.formBuscar.controls['distrito'].setValue('0');
+    this.centrosMedicos = [];
+    this.pagedItems = [];
+  }
+
+  login(){
+    this.router.navigate(['login']);
+  }
+
+}

@@ -1,0 +1,219 @@
+<div class="container-sm mt-4 p-3 border rounded shadow"
+style="margin-left: 260px; max-width: calc(100% - 260px)">
+  <form [formGroup]="frmCentroMedico" (ngSubmit)="onSubmit()">
+    <div class="row">
+      <div class="col text-center">
+        <p class="h4 fw-bold">{{ titulo }}</p>
+      </div>
+    </div>
+    <div class="row align-items-center mt-2">
+      <div class="col-2">
+        <label for="ruc" class="form-label fw-bold">Ruc:</label>
+      </div>
+      <div class="col-auto mb-2">
+        <input
+          type="text"
+          class="form-control form-control-sm"
+          id="ruc"
+          formControlName="ruc"
+          placeholder="Ingrese ruc"
+          [maxLength]="11"
+          [ngClass]="{ 'is-invalid': fcm['ruc'].errors }"
+        />
+        @if (fcm['ruc'].errors) {
+        <div class="invalid-feedback">
+          @if (fcm['ruc'].errors['required']) {
+          <div>El ruc es requerido</div>
+          } @if (fcm['ruc'].hasError('minlength')) {
+          <div>
+            El ruc es requerido y debe tener
+            {{ fcm["ruc"].errors["minlength"].requiredLength }} caracteres
+          </div>
+          }
+        </div>
+        }
+      </div>
+    </div>
+    <div class="row align-items-center">
+      <div class="col-2">
+        <label for="nombre" class="form-label fw-bold">Nombre:</label>
+      </div>
+      <div class="col mb-2">
+        <input
+          type="text"
+          class="form-control form-control-sm"
+          id="nombre"
+          formControlName="nombre"
+          placeholder="Ingrese nombre"
+          [maxLength]="200"
+          [ngClass]="{ 'is-invalid': fcm['nombre'].errors }"
+        />
+        @if (fcm['nombre'].errors) {
+        <div class="invalid-feedback">
+          @if (fcm['nombre'].errors['required']) {
+          <div>El nombre es requerido</div>
+          } @if (fcm['nombre'].hasError('minlength')) {
+          <div>
+            El nombre es requerido y debe tener mínimo
+            {{ fcm["nombre"].errors["minlength"].requiredLength }} caracteres
+          </div>
+          } @if (fcm['nombre'].hasError('maxlength')) {
+          <div>
+            El nombre es requerido y debe tener máximo
+            {{ fcm["nombre"].errors["maxlength"].requiredLength }} caracteres
+          </div>
+          }
+        </div>
+        }
+      </div>
+    </div>
+
+    <div class="row align-items-center">
+      <div class="col-2">
+        <label for="direccion" class="form-label fw-bold">Dirección:</label>
+      </div>
+      <div class="col mb-2">
+        <input
+          type="text"
+          class="form-control form-control-sm"
+          id="direccion"
+          formControlName="direccion"
+          placeholder="Ingrese dirección"
+          [maxLength]="500"
+          [ngClass]="{ 'is-invalid': fcm['direccion'].errors }"
+        />
+        @if (fcm['direccion'].errors) {
+        <div class="invalid-feedback">
+          @if (fcm['direccion'].errors['required']) {
+          <div>El nombre es requerido</div>
+          } @if (fcm['direccion'].hasError('minlength')) {
+          <div>
+            El nombre es requerido y debe tener mínimo
+            {{ fcm["direccion"].errors["minlength"].requiredLength }} caracteres
+          </div>
+          } @if (fcm['direccion'].hasError('maxlength')) {
+          <div>
+            El nombre es requerido y debe tener máximo
+            {{ fcm["direccion"].errors["maxlength"].requiredLength }} caracteres
+          </div>
+          }
+        </div>
+        }
+      </div>
+    </div>
+
+    <div class="row align-items-center">
+      <div class="col-2">
+        <label for="departamentoId" class="form-label fw-bold"
+          >Departamento:</label
+        >
+      </div>
+      <div class="col">
+        <select
+          class="form-select form-select-sm"
+          aria-label="Default select example"
+          formControlName="departamentoId"
+          (change)="onDepartamentoChange($event)"
+          [ngClass]="{ 'is-invalid': fcm['departamentoId'].errors }"
+        >
+          <option value="0" selected>--- TODOS ---</option>
+          @for (departamento of departamentos; track departamento.id) {
+          <option value="{{ departamento.id }}">
+            {{ departamento.nombre | uppercase }}
+          </option>
+          }
+        </select>
+        @if (fcm['departamentoId'].errors) {
+        <div class="invalid-feedback">
+          @if (fcm['departamentoId'].errors['required']) {
+          <div>El departamento es requerido</div>
+          }
+        </div>
+        }
+      </div>
+    </div>
+    <div class="row align-items-center mt-2">
+      <div class="col-2">
+        <label for="provinciaId" class="form-label fw-bold">Provincia:</label>
+      </div>
+      <div class="col">
+        <select
+          class="form-select form-select-sm"
+          aria-label="Default select example"
+          formControlName="provinciaId"
+          (change)="onProvinciaChange($event)"
+          [ngClass]="{ 'is-invalid': fcm['provinciaId'].errors }"
+        >
+          <option value="0" selected>--- TODOS ---</option>
+          @for (provincia of provincias; track provincia.id) {
+          <option value="{{ provincia.id }}">
+            {{ provincia.nombre | uppercase }}
+          </option>
+          }
+        </select>
+        @if (fcm['provinciaId'].errors) {
+        <div class="invalid-feedback">
+          @if (fcm['provinciaId'].errors['required']) {
+          <div>La provincia es requerida</div>
+          }
+        </div>
+        }
+      </div>
+    </div>
+    <div class="row align-items-center mt-2">
+      <div class="col-2">
+        <label for="distritoId" class="form-label fw-bold">Distrito:</label>
+      </div>
+      <div class="col">
+        <select
+          class="form-select form-select-sm"
+          aria-label="Default select example"
+          formControlName="distritoId"
+          [ngClass]="{ 'is-invalid': fcm['distritoId'].errors }"
+        >
+          <option value="0" selected>--- TODOS ---</option>
+          @for (distrito of distritos; track distrito.id) {
+          <option value="{{ distrito.id }}">
+            {{ distrito.nombre | uppercase }}
+          </option>
+          }
+        </select>
+        @if (fcm['distritoId'].errors) {
+        <div class="invalid-feedback">
+          @if (fcm['distritoId'].errors['required']) {
+          <div>El distrito es requerida</div>
+          }
+        </div>
+        }
+      </div>
+    </div>
+    <div class="row align-items-center mt-2">
+      <div class="col-2">
+        <label for="autorizacion" class="form-label fw-bold"
+          >Autorización:</label
+        >
+      </div>
+      <div class="col">
+        <div class="form-check">
+          <input
+            class="form-check-input"
+            type="checkbox"
+            id="autorizacion"
+            formControlName="autorizacion"
+            checked
+          />
+        </div>
+      </div>
+    </div>
+    <div class="justify-content-center mt-3">
+      <button type="submit" class="btn btn-primary btn-sm me-2" [disabled]="frmCentroMedico.invalid">Grabar</button>
+      <button
+        type="button"
+        class="btn btn-secondary btn-sm"
+        (click)="cancelar()"
+      >
+        Cancelar
+      </button>
+    </div>
+  </form>
+</div>

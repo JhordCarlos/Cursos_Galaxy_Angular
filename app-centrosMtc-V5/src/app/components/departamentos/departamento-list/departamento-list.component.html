@@ -1,0 +1,43 @@
+<div
+  class="container-sm mt-4 p-3 border rounded shadow"
+  style="margin-left: 260px; max-width: calc(100% - 260px)"
+>
+  <div class="row mb-2">
+    <div class="col text-center">
+      <p class="h4 fw-bold">Lista de Departamentos</p>
+    </div>
+  </div>
+  <div class="table-responsive">
+    <table
+      class="table table-sm table-striped table-bordered text-center small"
+    >
+      <thead class="table-light">
+        <tr>
+          <th>ID</th>
+          <th>DEPARTAMENTO</th>
+          <th scope="col" colspan="2" style="width: 60px; text-align: center">
+            OPCIONES
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (departamento of departamentos; track departamento.id) {
+        <tr>
+          <td>{{ departamentos.indexOf(departamento) + 1 }}</td>
+          <td>{{ departamento.nombre | uppercase }}</td>
+          <td>
+            <button type="button" hidden="true" class="btn btn-secondary">
+              <i class="bi bi-pencil"></i>
+            </button>
+          </td>
+          <td>
+            <button type="button" hidden="true" class="btn btn-danger">
+              <i class="bi bi-trash"></i>
+            </button>
+          </td>
+        </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</div>

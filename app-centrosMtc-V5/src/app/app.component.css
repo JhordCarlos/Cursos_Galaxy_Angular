@@ -1,0 +1,31 @@
+.ul{
+    font-size: 12px;
+}
+
+button{
+font-size: 12px;
+}
+
+.sidebar .nav-link {
+  font-size: 14px;
+  font-family: 'Arial', sans-serif;
+  font-weight: normal;
+  color: #333;
+  font-weight: bold;
+  padding: 10px;
+  display: block;
+  text-decoration: none;
+  background-color: #f1f1f1; /* Color gris claro */
+  border-radius: 5px;
+  transition: background 0.3s ease-in-out;
+  cursor: default; 
+}
+
+.sidebar .nav-link:hover,
+.sidebar .nav-link:focus {
+  background-color: #d6d6d6; /* Color gris más oscuro en hover */
+  outline: none;
+  font-weight: bold;
+  cursor: pointer; 
+}
+
