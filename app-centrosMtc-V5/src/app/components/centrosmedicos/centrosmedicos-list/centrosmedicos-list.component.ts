@@ -119,8 +119,16 @@ export class CentrosmedicosListComponent implements OnInit {
       .getByUbigeo(departamentoId, provinciaId, distritoId)
       .subscribe({
         next: (response) => {
-          this.centrosMedicos = response;
-          this.pagedItems = this.centrosMedicos.slice(0, this.itemsPerPage);
+          if (response.status === HttpStatusCode.Ok)
+          {
+            if (response.body){
+              this.centrosMedicos = response.body;
+              this.pagedItems = this.centrosMedicos.slice(0, this.itemsPerPage);
+            }
+          }else{
+            this.centrosMedicos = [];
+            this.pagedItems = [];
+          }
         },
         error: (error) => {
           this.toastr.error("Error al cargar los centros médicos")
@@ -136,6 +144,7 @@ export class CentrosmedicosListComponent implements OnInit {
       this.distritos = [];
     }
     this.formBuscar.controls['provincia'].setValue('0');
+    this.formBuscar.controls['distrito'].setValue('0');
     this.getProvinciaByDepartamento(departamentoId);
   }
 

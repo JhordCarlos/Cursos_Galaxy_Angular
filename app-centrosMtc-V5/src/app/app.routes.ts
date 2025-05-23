@@ -39,16 +39,19 @@ export const routes: Routes = [
   {
     path:'departamentos/list',
     component: DepartamentoListComponent,
+    canActivate: [AuthGuard]
   },
 
   {
     path:'provincias/list',
     component: ProvinciasListComponent,
+    canActivate: [AuthGuard]
   },
 
   {
     path:'distritos/list',
     component: DistritoListComponent,
+    canActivate: [AuthGuard]
   },
 
   { path: '',

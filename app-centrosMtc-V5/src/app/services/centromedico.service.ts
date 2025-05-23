@@ -30,7 +30,7 @@ export class CentromedicoService {
     departamentoId: string,
     provinciaId: string,
     distritoId: string
-  ): Observable<CentroMedico[]> {
+  ): Observable<HttpResponse<CentroMedico[]>> {
     let uri_local = ``;
 
     if (departamentoId != '0' && provinciaId == '0' && distritoId == '0') {
@@ -44,7 +44,7 @@ export class CentromedicoService {
     if (departamentoId != '0' && provinciaId != '0' && distritoId != '0') {
       uri_local = `${this.uri}/by-distrito?id=${distritoId}`;
     }
-    return this.http.get<CentroMedico[]>(uri_local);
+    return this.http.get<CentroMedico[]>(uri_local,{ observe: 'response' });
   }
 
   add(centromedico: Centromedicorequest): Observable<HttpResponse<any>> {
