@@ -1,3 +1,4 @@
+import { HttpStatusCode } from '@angular/common/http';
 import { Component, inject } from '@angular/core';
 import { Departamento } from '../../../interface/departamento/departamento';
 import { Provincia } from '../../../interface/provincia/provincia';
@@ -7,7 +8,12 @@ import { DepartamentoService } from '../../../services/departamento.service';
 import { ProvinciaService } from '../../../services/provincia.service';
 import { DistritoService } from '../../../services/distrito.service';
 import { CentromedicoService } from '../../../services/centromedico.service';
-import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import {
+  FormBuilder,
+  FormGroup,
+  FormsModule,
+  ReactiveFormsModule,
+} from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { CommonModule } from '@angular/common';
 import { PageChangedEvent, PaginationModule } from 'ngx-bootstrap/pagination';
@@ -17,14 +23,14 @@ import { PipeAutorizacionPipe } from '../../../pipes/pipe-autorizacion.pipe';
 @Component({
   selector: 'app-centrosmedicos-list-public',
   imports: [
-    CommonModule, 
+    CommonModule,
     ReactiveFormsModule,
     PaginationModule,
     FormsModule,
-    PipeAutorizacionPipe
+    PipeAutorizacionPipe,
   ],
   templateUrl: './centrosmedicos-list-public.component.html',
-  styleUrl: './centrosmedicos-list-public.component.css'
+  styleUrl: './centrosmedicos-list-public.component.css',
 })
 export class CentrosmedicosListPublicComponent {
   departamentos: Departamento[] = [];
@@ -32,33 +38,31 @@ export class CentrosmedicosListPublicComponent {
   distritos: Distrito[] = [];
   centrosMedicos: CentroMedico[] = [];
 
-  pagedItems:CentroMedico[]=[];
-  itemsPerPage:number=8;
-  currentPage:number=1;
+  pagedItems: CentroMedico[] = [];
+  itemsPerPage: number = 8;
+  currentPage: number = 1;
 
   departamentoService = inject(DepartamentoService);
   provinciaService = inject(ProvinciaService);
   distritoService = inject(DistritoService);
   centromedicoService = inject(CentromedicoService);
   formBuilder = inject(FormBuilder);
-  router=inject(Router);
-  
+  router = inject(Router);
+
   toastr = inject(ToastrService);
-  formBuscar! : FormGroup;
+  formBuscar!: FormGroup;
 
   ngOnInit(): void {
     this.createFormBuscar();
     this.getAllDepartamento();
   }
 
-  createFormBuscar(){
-    this.formBuscar = this.formBuilder.group(
-      {
-        departamento:['0'],
-        provincia: ['0'],
-        distrito: ['0']
-      }
-    )
+  createFormBuscar() {
+    this.formBuscar = this.formBuilder.group({
+      departamento: ['0'],
+      provincia: ['0'],
+      distrito: ['0'],
+    });
   }
 
   getAllDepartamento() {
@@ -67,7 +71,7 @@ export class CentrosmedicosListPublicComponent {
         this.departamentos = response;
       },
       error: (error) => {
-        this.toastr.error("Error al cargar departamentos");
+        this.toastr.error('Error al cargar departamentos');
       },
     });
   }
@@ -78,7 +82,7 @@ export class CentrosmedicosListPublicComponent {
         this.provincias = response;
       },
       error: (error) => {
-        this.toastr.error("Error al cargar provincias por departamento");
+        this.toastr.error('Error al cargar provincias por departamento');
       },
     });
   }
@@ -89,7 +93,7 @@ export class CentrosmedicosListPublicComponent {
         this.distritos = response;
       },
       error: (error) => {
-        this.toastr.error("Error al cargar distritos por provincia");
+        this.toastr.error('Error al cargar distritos por provincia');
       },
     });
   }
@@ -101,7 +105,7 @@ export class CentrosmedicosListPublicComponent {
         this.pagedItems = this.centrosMedicos.slice(0, this.itemsPerPage);
       },
       error: (error) => {
-        this.toastr.error("Error al cargar los centros médicos");
+        this.toastr.error('Error al cargar los centros médicos');
       },
     });
   }
@@ -115,11 +119,18 @@ export class CentrosmedicosListPublicComponent {
       .getByUbigeo(departamentoId, provinciaId, distritoId)
       .subscribe({
         next: (response) => {
-          this.centrosMedicos = response;
-          this.pagedItems = this.centrosMedicos.slice(0, this.itemsPerPage);
+          if (response.status === HttpStatusCode.Ok) {
+            if (response.body) {
+              this.centrosMedicos = response.body;
+              this.pagedItems = this.centrosMedicos.slice(0, this.itemsPerPage);
+            }
+          }else{
+            this.centrosMedicos = [];
+            this.pagedItems = [];
+          }
         },
         error: (error) => {
-          this.toastr.error("Error al cargar centros médicos");
+          this.toastr.error('Error al cargar centros médicos');
         },
       });
   }
@@ -132,6 +143,7 @@ export class CentrosmedicosListPublicComponent {
       this.distritos = [];
     }
     this.formBuscar.controls['provincia'].setValue('0');
+    this.formBuscar.controls['distrito'].setValue('0');
     this.getProvinciaByDepartamento(departamentoId);
   }
 
@@ -170,8 +182,7 @@ export class CentrosmedicosListPublicComponent {
     this.pagedItems = [];
   }
 
-  login(){
+  login() {
     this.router.navigate(['login']);
   }
-
 }
